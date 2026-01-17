@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/basic/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet">
+    <title>TodoApp</title>
+</head>
+<body>
+    
+    <header>
+        <div class="details">
+            <h1>TodoApp</h1>
+            <p>Track your tasks</p>
+            <div class="progress-bar">
+                <div id="progress"></div>
+            </div>
+        </div>
+        <div class="progress-number">
+            <div id="numerbs">0 / 3</div>
+        </div>
+        <div class="dark-mode">
+            <i class='bx  bx-moon-stars'></i> 
+            <i class='bx  bx-sun-dim'></i> 
+        </div>
+    </header>
+
+    <main>
+        <div class="input-section">
+            <input type="text" id="task-input" placeholder="Add a new task...">
+            <button id="add-task-btn"><i class='bx  bx-plus-circle bx-rotate-90 bx-flip-horizontal'></i> </button>
+        </div>
+        <ul id="task-list">
+        </ul>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 TodoApp. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
