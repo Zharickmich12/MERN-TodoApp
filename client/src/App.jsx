@@ -1,77 +1,68 @@
-
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import TaskInput from "./components/TaskInput";
 import TaskList from "./components/TaskList";
 import Footer from "./components/Footer";
-
-const STORAGE_KEY = "todo-tasks";
-
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-}
-
-const getDefaultTasks = () => [
-  { id: generateId(), text: "Aprender HTML y CSS", completed: false },
-  { id: generateId(), text: "Dominar JavaScript", completed: true },
-  {
-    id: generateId(),
-    text: "Conectar con MongoDB y React",
-    completed: false,
-  },
-];
+import * as tasksApi from "./api/tasks";
 
 export default function App() {
-
   const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
+    async function load() {
       try {
-        setTasks(JSON.parse(saved));
+        setLoading(true);
+        const data = await tasksApi.fetchTasks();
+        setTasks(data);
       } catch (err) {
-        console.error("Error al cargar:", err);
+        setError(err.message);
+        setTasks([]);
+      } finally {
+        setLoading(false);
       }
-    } else {
-      const defaults = getDefaultTasks();
-      setTasks(defaults);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
     }
+    load();
   }, []);
 
-  useEffect(() => {
-    if (tasks.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    }
-  }, [tasks]);
-
-  function addTask() {
+  async function addTask() {
     const text = inputValue.trim();
     if (!text) return;
 
-    const newTask = {
-      id: generateId(),
-      text,
-      completed: false,
-    };
-
-    setTasks((prev) => [...prev, newTask]);
-    setInputValue("");
+    try {
+      const newTask = await tasksApi.createTask(text, false);
+      setTasks((prev) => [newTask, ...prev]);
+      setInputValue("");
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
-  function deleteTask(id) {
-    setTasks((prev) => prev.filter((t) => t.id !== id));
+  async function deleteTask(id) {
+    try {
+      await tasksApi.deleteTask(id);
+      setTasks((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
-  function toggleTask(id) {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, completed: !t.completed } : t
-      )
-    );
+  async function toggleTask(id) {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+
+    try {
+      const updated = await tasksApi.updateTask(id, {
+        completed: !task.completed,
+      });
+      setTasks((prev) =>
+        prev.map((t) => (t.id === id ? updated : t))
+      );
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   const completed = tasks.filter((t) => t.completed).length;
@@ -86,12 +77,21 @@ export default function App() {
         progressPercent={progressPercent}
       />
       <main>
+        {error && (
+          <p style={{ color: "red", marginBottom: "1rem" }}>
+            {error} (¿Está el servidor en marcha? npm run dev en /server)
+          </p>
+        )}
         <TaskInput
           value={inputValue}
           onChange={setInputValue}
           onAdd={addTask}
         />
-        <TaskList tasks={tasks} onToggle={toggleTask} onDelete={deleteTask} />
+        {loading ? (
+          <p>Cargando tareas...</p>
+        ) : (
+          <TaskList tasks={tasks} onToggle={toggleTask} onDelete={deleteTask} />
+        )}
       </main>
       <Footer />
     </>
