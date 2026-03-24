@@ -4,6 +4,7 @@ import cors from "cors";
 import { config } from "dotenv";
 
 import tasksRouter from "./routes/tasks.js";
+import authRouter from "./routes/auth.js";
 
 config();
 
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/auth", authRouter);
 app.use("/api/tasks", tasksRouter);
 
 // Ruta de prueba
