@@ -38,6 +38,14 @@ App de tareas donde puedes:
 
 ---
 
+## Sobre el uso de IA en este proyecto
+
+En este proyecto, Claude se utilizó como herramienta de apoyo puntual, en un rol similar al de la documentación oficial o un foro técnico: resolución de dudas sobre buenas prácticas (por ejemplo, manejo de JWT o estructura de modelos en Mongoose), revisión de fragmentos de código, y orientación al momento de entender errores durante la integración entre frontend y backend.
+
+Las decisiones de diseño, la lógica general del proyecto y la comprensión de cada parte del código integrado son propias la IA funcionó como un recurso de consulta dentro del proceso, no como generadora principal del proyecto.
+
+---
+
 ## Estructura
 
 ```
